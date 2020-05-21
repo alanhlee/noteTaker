@@ -1,7 +1,12 @@
 const router = require("express").Router();
+const { join } = require('path')
 const List = require("./List.js");
 
 let list = new List();
+
+router.get('/notes', (req, res) => {
+  res.sendFile(join(__dirname, 'public/notes.html'))
+})
 
 router.get("/api/notes", async (req, res) => {
   let items = await list.getItems();
@@ -9,20 +14,16 @@ router.get("/api/notes", async (req, res) => {
 });
 
 // POST an item (giving something to the server)
-router.post("/api/notes", (req, res) => {
-  list.addItem(req.body);
+router.post("/api/notes", async (req, res) => {
+  await list.addItem(req.body);
   res.sendStatus(200);
 });
 
-// PUT an item (to update a pre existing thing/data server)
-router.put("/api/notes/:text", (req, res) => {
-  list.updateItem(req.params.text);
-  res.sendStatus(200);
-});
+
 
 // DELETE an item (to delete something/data from the server)
-router.delete("/api/notes/:text", (req, res) => {
-  list.deleteItem(req.params.text);
+router.delete("/api/notes/:id", (req, res) => {
+  list.deleteItem(req.params.id);
   res.sendStatus(200);
 });
 
